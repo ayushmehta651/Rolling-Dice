@@ -48,7 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               RaisedButton(
-                color: Colors.green[400],
+                hoverColor: Colors.blue,
+                color: Colors.grey[400],
                 onPressed: roll,
                 child: Text(
                   'Roll Dice',
