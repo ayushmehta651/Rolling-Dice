@@ -6,63 +6,98 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   int leftDiceNumber = 1;
-  int rightDiceNumber = 1;
-  void roll() {
-    setState(() {
-      leftDiceNumber = Random().nextInt(6) + 1;
-      rightDiceNumber = Random().nextInt(6) + 1;
+  int rightDiceNumber = 2;
+
+  AnimationController _controller;
+  CurvedAnimation animation;
+
+  @override
+  void initState() {
+    super.initState();
+    animate();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  animate() {
+    _controller =
+        AnimationController(duration: Duration(seconds: 1), vsync: this);
+    animation = CurvedAnimation(parent: _controller,curve: Curves.bounceOut);
+    animation.addListener(() {
+      setState(() {});
+      // print(_controller.value);
     });
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          leftDiceNumber = Random().nextInt(6) + 1;
+          rightDiceNumber = Random().nextInt(6) + 1;
+        });
+        //print('Completed');
+        _controller.reverse();
+      }
+    });
+  }
+
+  void roll() {
+    _controller.forward();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('LUDO')),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                children: [
-                  Expanded(
+      appBar: AppBar(
+        title: Text('Dicee'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: GestureDetector(
+                    onDoubleTap: roll,
                     child: Padding(
                       padding: EdgeInsets.all(15),
                       child: Image(
+                        height: 200 - (animation.value * 100),
                         image: AssetImage(
                             'assets/images/dice-png-$leftDiceNumber.png'),
                       ),
                     ),
                   ),
-                  Expanded(
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onDoubleTap: roll,
                     child: Padding(
                       padding: EdgeInsets.all(15),
                       child: Image(
+                        height: 200 - (animation.value * 100),
                         image: AssetImage(
                             'assets/images/dice-png-$rightDiceNumber.png'),
                       ),
                     ),
                   ),
-                ],
-              ),
-              RaisedButton(
-                hoverColor: Colors.blue,
-                color: Colors.grey[400],
-                onPressed: roll,
-                child: Text(
-                  'Roll Dice',
-                  style: (TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    fontSize: 20.0,
-                    fontFamily: 'Pacifico',
-                  )),
                 ),
-              )
-            ],
-          ),
+              ],
+            ),
+            RaisedButton(
+              color: Colors.green[400],
+              hoverColor: Colors.blue,
+              onPressed: roll,
+              child: Text('Roll'),
+              disabledColor: Colors.green,
+              hoverElevation: 5.0,
+            )
+          ],
         ),
       ),
     );
