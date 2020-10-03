@@ -6,15 +6,20 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  //when we have to use more than 1 animation we use : TickerProviderStateMixin
+  //else : SingleTickerProviderStateMixin
+
   int leftDiceNumber = 1;
-  int rightDiceNumber = 2;
+  int rightDiceNumber = 1;
 
   AnimationController _controller;
   CurvedAnimation animation;
 
   @override
   void initState() {
+    //it is not called when app is reloaded
     super.initState();
     animate();
   }
@@ -28,10 +33,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   animate() {
     _controller =
         AnimationController(duration: Duration(seconds: 1), vsync: this);
-    animation = CurvedAnimation(parent: _controller,curve: Curves.bounceOut);
+    animation = CurvedAnimation(parent: _controller, curve: Curves.bounceOut);
+    //To move the controller we have two properties forward and reverse
+    //_controller.forward();
     animation.addListener(() {
       setState(() {});
-      // print(_controller.value);
+     // print(_controller.value);
     });
     animation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -39,8 +46,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           leftDiceNumber = Random().nextInt(6) + 1;
           rightDiceNumber = Random().nextInt(6) + 1;
         });
-        //print('Completed');
+        //print('completed');
         _controller.reverse();
+        // _controller.addStatusListener((status) {
+        //   if (status == AnimationStatus.dismissed) print('done!');
+        // });
       }
     });
   }
@@ -52,53 +62,46 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Dicee'),
-      ),
+      appBar: AppBar(title: Text('Dicee'), backgroundColor: Colors.blue),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: GestureDetector(
-                    onDoubleTap: roll,
-                    child: Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Image(
-                        height: 200 - (animation.value * 100),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Row(
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onDoubleTap: roll, //(){roll();} (call back function)
+                  child: Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Image(
+                        height: 200 - (animation.value * 200),
                         image: AssetImage(
-                            'assets/images/dice-png-$leftDiceNumber.png'),
-                      ),
-                    ),
+                            'assets/images/dice-png-$leftDiceNumber.png')),
                   ),
                 ),
-                Expanded(
-                  child: GestureDetector(
-                    onDoubleTap: roll,
-                    child: Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Image(
-                        height: 200 - (animation.value * 100),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onDoubleTap: roll,
+                  child: Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: Image(
+                        height: 200 - (animation.value * 200),
                         image: AssetImage(
-                            'assets/images/dice-png-$rightDiceNumber.png'),
-                      ),
-                    ),
+                            'assets/images/dice-png-$rightDiceNumber.png')),
                   ),
                 ),
-              ],
+              )
+            ],
+          ),
+          RaisedButton(
+            onPressed: roll,
+            hoverColor: Colors.blue,
+            child: Text(
+              'Roll Dice',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            RaisedButton(
-              color: Colors.green[400],
-              hoverColor: Colors.blue,
-              onPressed: roll,
-              child: Text('Roll'),
-              disabledColor: Colors.green,
-              hoverElevation: 5.0,
-            )
-          ],
-        ),
+          )
+        ]),
       ),
     );
   }
