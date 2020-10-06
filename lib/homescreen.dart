@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen>
     //_controller.forward();
     animation.addListener(() {
       setState(() {});
-     // print(_controller.value);
+      // print(_controller.value);
     });
     animation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {

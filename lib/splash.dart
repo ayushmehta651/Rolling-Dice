@@ -20,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Timer(Duration(seconds: 3), onDoneLoading);
   }
 
+  //Replace the default starting screen with the orginal screen
   onDoneLoading() {
     Navigator.of(context)
         .pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()));
@@ -38,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Container(
           alignment: Alignment.center,
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height,//the screen can vary so we use Media query
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             gradient: LinearGradient(
